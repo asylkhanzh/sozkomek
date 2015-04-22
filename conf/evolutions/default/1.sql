@@ -2,6 +2,12 @@
 
 -- DROP TABLE accounts;
 
+# --- Created by Ebean DDL
+# To stop Ebean DDL generation, remove this comment and start using Evolutions
+
+# --- !Ups
+
+
 CREATE TABLE accounts
 (
   id integer NOT NULL,
@@ -15,6 +21,62 @@ WITH (
 OIDS=FALSE
 );
 ALTER TABLE accounts
+OWNER TO postgres;
+
+
+-- Table: transactionprocess
+
+-- DROP TABLE transactionprocess;
+
+CREATE TABLE transactionprocess
+(
+  id integer NOT NULL,
+  name character varying(100) NOT NULL,
+  description character varying(255) NOT NULL,
+  CONSTRAINT transactionprocess_pk PRIMARY KEY (id)
+)
+WITH (
+OIDS=FALSE
+);
+ALTER TABLE transactionprocess
+OWNER TO postgres;
+
+
+-- Table: transactiontype
+
+-- DROP TABLE transactiontype;
+
+CREATE TABLE transactiontype
+(
+  id integer NOT NULL,
+  name character varying(100) NOT NULL,
+  description character varying(255) NOT NULL,
+  CONSTRAINT transactiontype_pk PRIMARY KEY (id)
+)
+WITH (
+OIDS=FALSE
+);
+ALTER TABLE transactiontype
+OWNER TO postgres;
+
+
+
+-- Table: goods
+
+-- DROP TABLE goods;
+
+CREATE TABLE goods
+(
+  id integer NOT NULL,
+  name character varying(255) NOT NULL,
+  price integer,
+  description character varying(1000),
+  CONSTRAINT goods_pk PRIMARY KEY (id)
+)
+WITH (
+OIDS=FALSE
+);
+ALTER TABLE goods
 OWNER TO postgres;
 
 -- Table: comments
@@ -42,23 +104,7 @@ OIDS=FALSE
 ALTER TABLE comments
 OWNER TO postgres;
 
--- Table: goods
 
--- DROP TABLE goods;
-
-CREATE TABLE goods
-(
-  id integer NOT NULL,
-  name character varying(255) NOT NULL,
-  price integer,
-  description character varying(1000),
-  CONSTRAINT goods_pk PRIMARY KEY (id)
-)
-WITH (
-OIDS=FALSE
-);
-ALTER TABLE goods
-OWNER TO postgres;
 
 
 -- Table: orders
@@ -119,37 +165,3 @@ ALTER TABLE ordersgoods
 OWNER TO postgres;
 
 
--- Table: transactionprocess
-
--- DROP TABLE transactionprocess;
-
-CREATE TABLE transactionprocess
-(
-  id integer NOT NULL,
-  name character varying(100) NOT NULL,
-  description character varying(255) NOT NULL,
-  CONSTRAINT transactionprocess_pk PRIMARY KEY (id)
-)
-WITH (
-OIDS=FALSE
-);
-ALTER TABLE transactionprocess
-OWNER TO postgres;
-
-
--- Table: transactiontype
-
--- DROP TABLE transactiontype;
-
-CREATE TABLE transactiontype
-(
-  id integer NOT NULL,
-  name character varying(100) NOT NULL,
-  description character varying(255) NOT NULL,
-  CONSTRAINT transactiontype_pk PRIMARY KEY (id)
-)
-WITH (
-OIDS=FALSE
-);
-ALTER TABLE transactiontype
-OWNER TO postgres;

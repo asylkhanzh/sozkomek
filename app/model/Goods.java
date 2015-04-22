@@ -1,7 +1,17 @@
 package model;
 
-/**
- * Created by админ on 21.04.2015.
- */
-public class Goods {
+import play.db.ebean.Model;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity
+public class Goods extends Model {
+
+    @Id
+    public Integer id;
+    public String name;
+    public String description;
+
+
 }

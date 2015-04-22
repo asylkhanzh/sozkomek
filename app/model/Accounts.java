@@ -2,6 +2,8 @@ package model;
 
 import play.db.ebean.Model;
 
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Id;
 
 /**
@@ -15,6 +17,8 @@ public class Accounts extends Model{
     public String name;
     public String email;
     public String path;
-    public String accounttype;
+    @Enumerated(EnumType.STRING)
+    public AccountType accounttype;
+
 
 }

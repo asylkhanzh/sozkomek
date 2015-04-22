@@ -3,15 +3,12 @@
 
 # --- !Ups
 
-create table account (
-  id                        bigint not null,
+create table accounts (
+  id                        int not null,
   name                      varchar(255),
+  email                     varchar(255),
   password                  varchar(255),
-  status_id                 bigint,
-  usertype_id               integer,
-  groupuser_id              integer,
-  current_amount            float,
-  blocked_amount            float,
+  accounttype               varchar(255),
   constraint pk_account primary key (id))
 ;
 

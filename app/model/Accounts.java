@@ -2,13 +2,12 @@ package model;
 
 import play.db.ebean.Model;
 
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 /**
  * Created by админ on 21.04.2015.
  */
+@Entity
 public class Accounts extends Model{
 
     @Id
@@ -19,6 +18,9 @@ public class Accounts extends Model{
     public String path;
     @Enumerated(EnumType.STRING)
     public AccountType accounttype;
+
+    //Елемент для создания запроса к accounts
+    public static Finder<Integer,Accounts> find = new Finder<Integer,Accounts>( Integer.class, Accounts.class );
 
 
 }

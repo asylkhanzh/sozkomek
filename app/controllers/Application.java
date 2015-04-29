@@ -133,6 +133,12 @@ public class Application extends Controller {
         } else {
             session().clear();
             session("email", loginForm.get().email);
+
+
+            List<Accounts> accountsList =  Accounts.find.where().eq("email", loginForm.get().email).findList();
+            Accounts accounts = accountsList.get(0);
+            session("accounttype", accounts.accounttype.name());
+
             return redirect(routes.Application.index());
         }
     }

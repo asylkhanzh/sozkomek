@@ -35,9 +35,11 @@
 					<div class="col-sm-8">
 						<div class="shop-menu pull-right">
 							<ul class="nav navbar-nav">
+							@if(session.get("accounttype")=="ADMIN") {
 								<li><a href="addgoods"><i class="fa fa-star"></i> Транзакции</a></li>
 								<li><a href="addgoods"><i class="fa fa-star"></i> Отзывы</a></li>
 								<li><a href="addgoods"><i class="fa fa-star"></i> Товары</a></li>
+							}
 								<li><a href="#"><i class="fa fa-user"></i> Account</a></li>
 								<li><a href="checkout"><i class="fa fa-crosshairs"></i> Checkout</a></li>
 								<li><a href="cart"><i class="fa fa-shopping-cart"></i> Cart</a></li>

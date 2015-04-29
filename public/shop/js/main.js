@@ -28,3 +28,14 @@ $(document).ready(function(){
 		});
 	});
 });
+
+$(".add-to-cart").click(function(){
+	var id = $('.add-to-cart', $(this).closest("input")).val()
+	alert(id);
+	alert("Cussces");
+	$.get( "/addBasket",
+		{ id: "1" },
+		function( data ) {
+			alert( data );
+	});
+});

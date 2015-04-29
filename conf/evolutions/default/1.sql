@@ -90,6 +90,7 @@ CREATE TABLE comments
   account_id integer NOT NULL,
   comment character varying(1000) NOT NULL,
   status integer NOT NULL,
+  date character varying NOT NULL,
   CONSTRAINT comment_pk PRIMARY KEY (id),
   CONSTRAINT account_k FOREIGN KEY (account_id)
   REFERENCES accounts (id) MATCH SIMPLE
@@ -103,7 +104,6 @@ OIDS=FALSE
 );
 ALTER TABLE comments
 OWNER TO postgres;
-
 
 
 
@@ -163,5 +163,3 @@ OIDS=FALSE
 );
 ALTER TABLE ordersgoods
 OWNER TO postgres;
-
-

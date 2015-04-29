@@ -1,0 +1,41 @@
+@(form: Form[Application.GoodsForm])
+
+<!DOCTYPE html>
+<html lang="en">
+
+@head()
+
+<body>
+
+@header()
+
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6 col-sm-offset-1">
+                <div class="signup-form"><!--sign up form-->
+                    <h2>Добавить товар:</h2>
+                    @helper.form(routes.Application.addPostGoods, 'enctype -> "multipart/form-data") {
+                        @if(form.hasGlobalErrors) {
+                            <span style="color: red">
+                            @form.globalError.message
+                            </span>
+                        }
+                        <input type="text" name="name" placeholder="Название товара"/>
+                        <input type="number" name="price" placeholder="Цена"/>
+                        <textarea rows="10" cols="45" name="description" placeholder="Опишите товар подробно"></textarea>
+                        <input type="file" name="picture" accept="image/jpeg">
+                        <button type="submit" class="btn btn-default">Добавить</button>
+                    }
+                </div>
+                <!--/sign up form-->
+            </div>
+        </div>
+    </div>
+    <br>
+<!--/form-->
+
+@footer()
+@footerScript()
+
+</body>
+</html>

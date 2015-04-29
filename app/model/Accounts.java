@@ -11,6 +11,8 @@ import javax.persistence.*;
 public class Accounts extends Model{
 
     @Id
+    @SequenceGenerator(name="gen", sequenceName="table_idcolumn_seq",allocationSize=1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "gen")
     public Integer id;
 
     public String name;

@@ -3,18 +3,51 @@
 # ~~~~
 
 # Home page
-GET     /                           controllers.Application.index()
+GET         /                      controllers.Application.index()
 
-GET     /cart                       controllers.Application.cart()
+GET         /cart                  controllers.Application.cart()
 
-GET     /login                      controllers.Application.login()
-POST    /login                      controllers.Application.authenticate()
+GET         /logout                controllers.Application.logout()
 
-GET     /checkout                   controllers.Application.checkout()
+GET         /login                 controllers.Application.login()
+POST        /login                 controllers.Application.authenticate()
+GET         /registration          controllers.Application.registration_get()
+POST        /registration          controllers.Application.registration()
 
-GET     /shop                       controllers.Application.shop()
 
+GET         /checkout              controllers.Application.checkout()
 
+GET         /shop                  controllers.Application.shop()
+
+GET         /addBasket             controllers.Application.addBasket(id:String)
+
+# вюшка O bimash
+
+GET         /productbimash         controllers.Application.productbimash()
+
+GET         /obimash               controllers.Application.obimash()
+
+GET         /contactbimash         controllers.Application.contactbimash()
+
+# вюшка Сервис
+
+GET         /faqs                  controllers.Application.faqs()
+
+GET         /scheme                controllers.Application.scheme()
+
+GET         /activate              controllers.Application.activate()
+
+GET         /support               controllers.Application.support()
+
+# вюшка O bimash
+
+GET         /error                 controllers.Application.error()
+
+GET         /productdetails        controllers.Application.productdetails()
+
+GET         /addgoods              controllers.Application.addGoods()
+
+POST        /addgoods              controllers.Application.addPostGoods()
 
 # Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file               controllers.Assets.at(path="/public", file)
+GET         /assets/*file          controllers.Assets.at(path="/public", file)

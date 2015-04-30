@@ -17,10 +17,7 @@ import play.libs.*;
 import play.libs.mailer.Email;
 import play.libs.mailer.MailerPlugin;
 
-
-
 public class Application extends Controller {
-
 
     public static Result index() {
         return ok(index.render(""));
@@ -54,6 +51,7 @@ public class Application extends Controller {
 
     public static Result productdetails() { return ok(productdetails.render(""));}
 
+    @Security.Authenticated(Secured.class)
     public static Result checkout() {
         return ok(checkout.render(""));
     }
@@ -71,10 +69,10 @@ public class Application extends Controller {
     //Ворма входа в систему
     public static Result login() {
 
-        Email email = new Email();
-        email.setSubject("Simple email");
-        email.setFrom("Mister FROM <1asylkhan@mail.ru>");
-        email.addTo("Miss TO <1asylkhan@mail.ru>");
+//        Email email = new Email();
+//        email.setSubject("Simple email");
+//        email.setFrom("Mister FROM <1asylkhan@mail.ru>");
+//        email.addTo("Miss TO <1asylkhan@mail.ru>");
 // adds attachment
 //        email.addAttachment("attachment.pdf", new File("/some/path/attachment.pdf"));
 // adds inline attachment from byte array
@@ -82,12 +80,10 @@ public class Application extends Controller {
 // sends text, HTML or both...
         //email.setBodyText("http://localhost/url/num");
         //email.setBodyHtml("<html><body><p>An <b>html</b> message</p></body></html>");
-        email.setBodyHtml("<a href='http://localhost:9000/url/num'>http://localhost/url/num</a>");
-        MailerPlugin.send(email);
+//        email.setBodyHtml("<a href='http://localhost:9000/url/num'>http://localhost/url/num</a>");
+//        MailerPlugin.send(email);
         return ok(login.render(form(Login.class)));
     }
-
-
 
     public static Result logout() {
         session().clear();

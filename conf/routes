@@ -3,51 +3,65 @@
 # ~~~~
 
 # Home page
-GET         /                      controllers.Application.index()
 
-GET         /cart                  controllers.Application.cart()
+GET         /                          controllers.Application.index()
 
-GET         /logout                controllers.Application.logout()
+GET         /logout                    controllers.Application.logout()
 
-GET         /login                 controllers.Application.login()
-POST        /login                 controllers.Application.authenticate()
-GET         /registration          controllers.Application.registration_get()
-POST        /registration          controllers.Application.registration()
+GET         /login                     controllers.Application.login()
+POST        /login                     controllers.Application.authenticate()
+GET         /registration              controllers.Application.registration_get()
+POST        /registration              controllers.Application.registration()
 
+GET         /productdetails/:id        controllers.Application.productdetails(id: Integer)
+POST        /productdetails/:id        controllers.Application.productcoments(id: Integer)
 
-GET         /checkout              controllers.Application.checkout()
+# вюшка adminpanel
 
-GET         /shop                  controllers.Application.shop()
+GET         /addgoods                  controllers.Adminpanel.addGoods()
 
-GET         /addBasket             controllers.Application.addBasket(id:String)
+POST        /addgoods                  controllers.Adminpanel.addPostGoods()
+
+GET         /confirmcomments           controllers.Adminpanel.confirmComments()
+
+GET         /confirmorders             controllers.Adminpanel.confirmOrders()
+
+GET         /confirmcomments/:id       controllers.Adminpanel.confirmCommentsID(id: Integer)
+
+# вюшка userpanel
+
+GET         /cart                      controllers.Application.cart()
+
+GET         /checkout                  controllers.Application.checkout()
+
+GET         /addBasket                 controllers.Application.addBasket(id:String)
+POST        /addBasketPost             controllers.Application.addBasketPost()
+GET         /basketCount               controllers.Application.basketCount()
 
 # вюшка O bimash
 
-GET         /productbimash         controllers.Application.productbimash()
+GET         /productbimash             controllers.Application.productbimash()
 
-GET         /obimash               controllers.Application.obimash()
+GET         /obimash                   controllers.Application.obimash()
 
-GET         /contactbimash         controllers.Application.contactbimash()
+GET         /contactbimash             controllers.Application.contactbimash()
 
 # вюшка Сервис
 
-GET         /faqs                  controllers.Application.faqs()
+GET         /faqs                      controllers.Application.faqs()
 
-GET         /scheme                controllers.Application.scheme()
+GET         /scheme                    controllers.Application.scheme()
 
-GET         /activate              controllers.Application.activate()
+GET         /activate                  controllers.Application.activate()
 
-GET         /support               controllers.Application.support()
+GET         /support                   controllers.Application.support()
 
-# вюшка O bimash
+GET         /shop                      controllers.Application.shop()
 
-GET         /error                 controllers.Application.error()
+GET         /partners                  controllers.Application.partners()
 
-GET         /productdetails        controllers.Application.productdetails()
+GET         /error                     controllers.Application.error()
 
-GET         /addgoods              controllers.Application.addGoods()
-
-POST        /addgoods              controllers.Application.addPostGoods()
 
 # Map static resources from the /public folder to the /assets URL path
-GET         /assets/*file          controllers.Assets.at(path="/public", file)
+GET         /assets/*file              controllers.Assets.at(path="/public", file)

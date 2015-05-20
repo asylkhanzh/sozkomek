@@ -2,15 +2,18 @@ package controllers;
 
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebeaninternal.util.DefaultExpressionList;
-import model.AccountType;
-import model.Accounts;
-import model.Goods;
+import model.*;
 import play.*;
 import play.data.Form;
 import play.mvc.*;
 import views.html.*;
 
 import java.io.File;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.sql.Timestamp;
+import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import static play.data.Form.form;
 import play.libs.*;
@@ -20,11 +23,13 @@ import play.libs.mailer.MailerPlugin;
 public class Application extends Controller {
 
     public static Result index() {
-        return ok(index.render(""));
+        List<Goods> goodsList = Goods.find.all();
+        return ok(index.render(goodsList));
     }
 
     public static Result cart() {
-        return ok(cart.render(""));
+        List<Goods> goodsList = Goods.find.all();
+        return ok(cart.render(goodsList));
     }
 
     // вюшки О bimash
@@ -45,11 +50,11 @@ public class Application extends Controller {
 
     public static Result support() { return ok(support.render(""));}
 
-    // вюшки 404
+    // вюшкa 404
 
     public static Result error() { return ok(error.render(""));}
 
-    public static Result productdetails() { return ok(productdetails.render(""));}
+    public static Result partners() { return ok(partners.render(""));}
 
     @Security.Authenticated(Secured.class)
     public static Result checkout() {
@@ -61,36 +66,38 @@ public class Application extends Controller {
         return ok(shop.render(goodsList));
     }
 
-    @Security.Authenticated(Secured.class)
-    public static Result addGoods() { return  ok(addGoods.render(form(GoodsForm.class))); }
-
     public static Result registration_get() { return ok(registration.render(form(Register.class))); }
+
+    public static Result productdetails(Integer id) {
+        List<Goods> goodsList = Goods.find.all();
+        return ok(productdetails.render(goodsList , id ,form(Comment.class)));}
 
     //Ворма входа в систему
     public static Result login() {
 
-//        Email email = new Email();
-//        email.setSubject("Simple email");
-//        email.setFrom("Mister FROM <1asylkhan@mail.ru>");
-//        email.addTo("Miss TO <1asylkhan@mail.ru>");
-// adds attachment
-//        email.addAttachment("attachment.pdf", new File("/some/path/attachment.pdf"));
-// adds inline attachment from byte array
- //       email.addAttachment("data.txt", "data".getBytes(), "text/plain", "Simple data", EmailAttachment.INLINE);
-// sends text, HTML or both...
-        //email.setBodyText("http://localhost/url/num");
-        //email.setBodyHtml("<html><body><p>An <b>html</b> message</p></body></html>");
-//        email.setBodyHtml("<a href='http://localhost:9000/url/num'>http://localhost/url/num</a>");
-//        MailerPlugin.send(email);
+        if(session("email") !=null && !session("email").isEmpty())
+            return redirect(controllers.routes.Application.index());
+
+        Email email = new Email();
+        email.setSubject("Simple email");
+        email.setFrom("Mister FROM <1asylkhan@mail.ru>");
+        email.addTo("Miss TO <1asylkhan@mail.ru>");
+adds attachment
+        email.addAttachment("attachment.pdf", new File("/some/path/attachment.pdf"));
+adds inline attachment from byte array
+        email.addAttachment("data.txt", "data".getBytes(), "text/plain", "Simple data", EmailAttachment.INLINE);
+sends text, HTML or both...
+        email.setBodyText("http://localhost/url/num");
+        email.setBodyHtml("<html><body><p>An <b>html</b> message</p></body></html>");
+        email.setBodyHtml("<a href='http://localhost:9000/url/num'>http://localhost/url/num</a>");
+        MailerPlugin.send(email);
         return ok(login.render(form(Login.class)));
     }
 
     public static Result logout() {
         session().clear();
         flash("success", "You've been logged out");
-        return redirect(
-                routes.Application.login()
-        );
+        return redirect(controllers.routes.Application.login());
     }
 
     /**
@@ -111,7 +118,7 @@ public class Application extends Controller {
 
             if(!accountsList.isEmpty()){
                 Accounts accounts = accountsList.get(0);
-                if(!accounts.path.equals(password))
+                if(!accounts.path.equals(md5(password)))
                     return "Неверный пароль";
             }
 
@@ -127,7 +134,7 @@ public class Application extends Controller {
             return badRequest(login.render(loginForm));
 
         } else {
-            session().clear();
+            //session().clear();
             session("email", loginForm.get().email);
 
 
@@ -173,10 +180,29 @@ public class Application extends Controller {
             return null;
         }
     }
+    /**
+     * Форма для регистрации
+     * */
+    public static class Comment {
+
+        public String comment;
+
+        //Функция валидации
+        public String validate() {
+
+            if (session("email")==null || session("email").isEmpty()) {
+                return "Вы не авторизованы, чтобы оставить коментарий авторизуйтесь";
+            }
+            if (comment ==null || comment.isEmpty()) {
+                return "Вы не написали коментарий";
+            }
+
+            return null;
+        }
+    }
 
     public static Result registration() {
         Form<Register> regForm = Form.form(Register.class).bindFromRequest();
-        //if (loginForm.hasErrors()) {
         if (regForm.hasErrors()) {
             return badRequest(registration.render(regForm));
 
@@ -185,74 +211,38 @@ public class Application extends Controller {
             Accounts accounts = new Accounts();
             accounts.name= regForm.get().name;
             accounts.email= regForm.get().email;
-            accounts.path= regForm.get().password;
+            accounts.path= md5(regForm.get().password);
             accounts.accounttype = AccountType.USER;
             accounts.save();
 
             session().clear();
-            session("email", regForm.get().email);
-            return redirect(routes.Application.index());
+            //session("email", regForm.get().email);
+            return redirect(routes.Application.login());
         }
     }
 
-    public static class GoodsForm {
-        public String name;
-        public Double price;
-        public String description;
-
-        //Функция валидации
-        public String validate() {
-
-            List<Goods> goodsList =  Goods.find.where().eq("name", name).findList();
-            if(!goodsList.isEmpty())
-                return "Товар с таким именем существует";
-            if (name ==null || name.isEmpty()) {
-                return "не ввели емайл";
-            }
-            if (price ==null || price<0) {
-                return "введите цену";
-            }
-            if (description ==null || description.isEmpty()) {
-                return "не описали товар";
-            }
-
-            return null;
-        }
-    }
-
-    @Security.Authenticated(Secured.class)
-    public static Result addPostGoods() {
-        Form<GoodsForm> regForm = Form.form(GoodsForm.class).bindFromRequest();
-        if (regForm.hasErrors()) {
-            return badRequest(addGoods.render(regForm));
+    public static Result productcoments(Integer id) {
+        Form<Comment> commentForm = Form.form(Comment.class).bindFromRequest();
+        if (commentForm.hasErrors()) {
+            List<Goods> goodsList = Goods.find.all();
+            return badRequest(productdetails.render(goodsList , id ,commentForm));
 
         } else {
 
-            Goods goods = new Goods();
-            goods.name= regForm.get().name;
-            goods.price= regForm.get().price;
-            goods.description=regForm.get().description;
-            goods.save();
+            Comments comments = new Comments();
+            String email =  session("email");
+            Accounts accounts = Accounts.findByName(email);
 
-
-            Http.MultipartFormData body = request().body().asMultipartFormData();
-            Http.MultipartFormData.FilePart picture = body.getFile("picture");
-            if (picture != null) {
-                String fileName = picture.getFilename();
-                String contentType = picture.getContentType();
-                File file = picture.getFile();
-
-                String myUploadPath = Play.application().configuration().getString("myUploadPath");
-                file.renameTo(new File(myUploadPath, goods.id + ".jpg"));
-                return ok("File uploaded");
-            } else {
-                flash("error", "Missing file");
-                return redirect(routes.Application.index());
-            }
-
-            //return redirect(routes.Application.index());
+            comments.account_id = accounts.id;
+            comments.comment = commentForm.get().comment;
+            comments.goods_id = id;
+            comments.status = model.Status.OFF;
+            comments.date = new Timestamp(Calendar.getInstance().getTime().getTime());
+            comments.save();
+            return redirect(routes.Application.login());
         }
     }
+
     public static Result addBasket(String id) {
         Goods goods = new Goods();
         goods.name=id;
@@ -263,6 +253,66 @@ public class Application extends Controller {
         return ok("Successfully  uploaded");
     }
 
+    public static class Basket {
+        public String id;
+        public String count;
+    }
+
+    public static Result addBasketPost() {
+        Form<Basket> basketForm = Form.form(Basket.class).bindFromRequest();
+
+        String uid = "basket_"+ basketForm.get().id;
+        if(session(uid)==null)
+            session(uid, basketForm.get().count);
+        else{
+            String oldValue = session(uid);
+            Integer newValue = Integer.valueOf(oldValue) + Integer.valueOf(basketForm.get().count);
+            session(uid, String.valueOf(newValue));
+        }
+
+        flash("Successfully  uploaded" + request().body());
+        return ok("Successfully  uploaded" +  session(uid));
+    }
+
+
+    public static Result basketCount() {
+
+        Integer basketCount = 0;
+
+        for(String key : session().keySet()){
+            if(key.startsWith("basket_")){
+                basketCount+=Integer.valueOf(session(key));
+            }
+
+        }
+
+
+        return ok(String.valueOf(basketCount));
+    }
+
+    public static final String md5(final String s) {
+        final String MD5 = "MD5";
+        try {
+            // Create MD5 Hash
+            MessageDigest digest = java.security.MessageDigest
+                    .getInstance(MD5);
+            digest.update(s.getBytes());
+            byte messageDigest[] = digest.digest();
+
+            // Create Hex String
+            StringBuilder hexString = new StringBuilder();
+            for (byte aMessageDigest : messageDigest) {
+                String h = Integer.toHexString(0xFF & aMessageDigest);
+                while (h.length() < 2)
+                    h = "0" + h;
+                hexString.append(h);
+            }
+            return hexString.toString();
+
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
 }
-
-

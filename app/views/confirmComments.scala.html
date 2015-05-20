@@ -1,0 +1,54 @@
+@(commentsList: List[model.Comments])
+
+<!DOCTYPE html>
+<html lang="en">
+
+@head()
+
+<body>
+
+@header()
+
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="table-responsive">
+                    <h2 class="title text-center">Подтвердить отзывы:</h2>
+                    <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>ID пользователя</th>
+                                    <th>Товар</th>
+                                    <th>Дата</th>
+                                    <th>Коментарии</th>
+                                </tr>
+                            </thead>
+                        @for(comments <- commentsList) {
+                            @if(comments.status==model.Status.OFF){
+                            <tbody>
+                                <tr>
+                                    <td>@comments.id</td>
+                                    <td>@comments.account_id</td>
+                                    <td>@comments.goods_id</td>
+                                    <td>@comments.date</td>
+                                    <td>@comments.comment</td>
+                                    <td><a class="btn btn-default" href='@routes.Adminpanel.confirmCommentsID(comments.id)'>Подтвердить</a><td>
+                                </tr>
+                            </tbody>
+                            }
+                        }
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <br>
+<!--/form-->
+
+@footer()
+@footerScript()
+
+</body>
+</html>
